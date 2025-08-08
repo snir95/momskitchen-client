@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Mail, Check, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import type { MenuItem } from '@/types';
 
-export default function UpcomingDishCard({ item, onRequestDish }) {
+interface UpcomingDishCardProps {
+  item: MenuItem;
+  onRequestDish: (item: MenuItem) => Promise<void>;
+}
+
+export default function UpcomingDishCard({ item, onRequestDish }: UpcomingDishCardProps) {
   const [requestState, setRequestState] = useState('idle'); // idle, loading, success
 
   const handleRequest = async () => {

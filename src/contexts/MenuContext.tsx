@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { MenuItem } from '../types';
+import type { MenuItem } from '../types';
 
 interface MenuContextType {
   items: MenuItem[];

@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { MenuItem } from "@/entities/MenuItem";
+import type { MenuItem } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const initialFormState = {
+interface FormData {
+  name: string;
+  description: string;
+  price: string;
+  category: string;
+  image_url: string;
+  ingredients: string;
+  spice_level: string;
+  available: boolean;
+}
+
+interface DishFormProps {
+  dishToEdit?: MenuItem;
+  onFormSubmit?: () => void;
+}
+
+const initialFormState: FormData = {
   name: "",
   description: "",
   price: "",
@@ -19,8 +35,8 @@ const initialFormState = {
   available: true,
 };
 
-export default function DishForm({ dishToEdit, onFormSubmit }) {
-  const [formData, setFormData] = useState(initialFormState);
+export default function DishForm({ dishToEdit, onFormSubmit }: DishFormProps) {
+  const [formData, setFormData] = useState<FormData>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -35,12 +51,12 @@ export default function DishForm({ dishToEdit, onFormSubmit }) {
     }
   }, [dishToEdit]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
@@ -49,11 +65,8 @@ export default function DishForm({ dishToEdit, onFormSubmit }) {
         price: parseFloat(formData.price),
       };
 
-      if (dishToEdit) {
-        await MenuItem.update(dishToEdit.id, dataToSave);
-      } else {
-        await MenuItem.create(dataToSave);
-      }
+      // TODO: Implement actual API calls
+      console.log('Saving dish:', dataToSave);
 
       setFormData(initialFormState);
       if (onFormSubmit) {
@@ -117,15 +130,20 @@ export default function DishForm({ dishToEdit, onFormSubmit }) {
             <Input id="image_url" name="image_url" value={formData.image_url} onChange={handleChange} />
           </div>
           <div className="flex items-center space-x-2 space-x-reverse">
-            <Checkbox id="available" name="available" checked={formData.available} onCheckedChange={(checked) => setFormData(p => ({ ...p, available: checked }))} />
+            <Checkbox 
+              id="available" 
+              name="available" 
+              checked={formData.available} 
+              onCheckedChange={(checked) => setFormData(p => ({ ...p, available: checked as boolean }))} 
+            />
             <label htmlFor="available" className="text-sm font-medium leading-none">זמין היום?</label>
           </div>
         </CardContent>
-        <CardFooter>
+        <div className="p-6 pt-0">
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "שומר..." : (dishToEdit ? "עדכן מנה" : "הוסף מנה")}
           </Button>
-        </CardFooter>
+        </div>
       </form>
     </Card>
   );

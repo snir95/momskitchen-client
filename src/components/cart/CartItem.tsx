@@ -1,8 +1,14 @@
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus, Trash2 } from 'lucide-react';
+import type { CartItem as CartItemType } from '@/types';
 
-export default function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
+interface CartItemProps {
+  item: CartItemType;
+  onUpdateQuantity: (id: string, quantity: number) => void;
+  onRemoveItem: (id: string) => void;
+}
+
+export default function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-orange-100">
       <div className="flex-1">
@@ -16,7 +22,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
             size="icon"
             variant="ghost"
             className="h-8 w-8 rounded-full hover:bg-red-100 text-red-600"
-            onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+            onClick={() => onUpdateQuantity(item._id, item.quantity - 1)}
           >
             <Minus className="h-4 w-4" />
           </Button>
@@ -25,7 +31,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
             size="icon"
             variant="ghost"
             className="h-8 w-8 rounded-full hover:bg-green-100 text-green-600"
-            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+            onClick={() => onUpdateQuantity(item._id, item.quantity + 1)}
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -39,7 +45,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
           size="icon"
           variant="ghost"
           className="text-red-500 hover:bg-red-50"
-          onClick={() => onRemoveItem(item.id)}
+          onClick={() => onRemoveItem(item._id)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>

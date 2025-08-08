@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { MenuItem } from "@/entities/MenuItem";
+import  { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 import DishForm from "./DishForm";
+import type { MenuItem } from "@/types";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/dialog";
 
 export default function ManageDishes() {
-  const [dishes, setDishes] = useState([]);
-  const [editingDish, setEditingDish] = useState(null);
+  const [dishes, setDishes] = useState<MenuItem[]>([]);
+  const [editingDish, setEditingDish] = useState<MenuItem | undefined>(undefined);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
@@ -24,28 +24,31 @@ export default function ManageDishes() {
   }, []);
 
   const loadDishes = async () => {
-    const allDishes = await MenuItem.list();
-    setDishes(allDishes);
+    // TODO: Implement actual API call
+    console.log('Loading dishes...');
+    setDishes([]);
   };
 
-  const handleToggleAvailable = async (dish, available) => {
-    await MenuItem.update(dish.id, { available });
+  const handleToggleAvailable = async (dish: MenuItem, available: boolean) => {
+    // TODO: Implement actual API call
+    console.log('Toggle available:', dish._id, available);
     loadDishes();
   };
 
-  const handleDelete = async (dishId) => {
-    await MenuItem.delete(dishId);
+  const handleDelete = async (dishId: string) => {
+    // TODO: Implement actual API call
+    console.log('Delete dish:', dishId);
     loadDishes();
   };
 
-  const handleEdit = (dish) => {
+  const handleEdit = (dish: MenuItem) => {
     setEditingDish(dish);
     setIsFormOpen(true);
   };
 
   const handleFormSubmit = () => {
     setIsFormOpen(false);
-    setEditingDish(null);
+    setEditingDish(undefined);
     loadDishes();
   };
 
@@ -63,7 +66,7 @@ export default function ManageDishes() {
         </TableHeader>
         <TableBody>
           {dishes.map((dish) => (
-            <TableRow key={dish.id}>
+            <TableRow key={dish._id}>
               <TableCell className="font-medium">{dish.name}</TableCell>
               <TableCell>₪{dish.price.toFixed(2)}</TableCell>
               <TableCell>{dish.category}</TableCell>
@@ -79,7 +82,7 @@ export default function ManageDishes() {
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="icon">
+                    <Button variant="outline" size="icon" className="text-red-600 hover:text-red-700">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </AlertDialogTrigger>
@@ -92,7 +95,7 @@ export default function ManageDishes() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>ביטול</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(dish.id)}>
+                      <AlertDialogAction onClick={() => handleDelete(dish._id)}>
                         מחק
                       </AlertDialogAction>
                     </AlertDialogFooter>
